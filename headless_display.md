@@ -9,16 +9,32 @@
 2. change /etc/X11/xorg.conf as follows:
    
    ```ini
+   # Disable extensions not useful on Tegra.
    Section "Module"
+       Disable     "dri"
+       SubSection  "extmod"
+           Option  "omit xfree86-dga"
+       EndSubSection
+   EndSection
+   
+   Section "Device"
+       Identifier  "Tegra0"
+       Driver      "nvidia"
+   # Allow X server to be started even if no display devices are connected.
+       Option      "AllowEmptyInitialConfiguration" "true"
+   EndSection
+   
    Section "Device"
       Identifier  "Configured Video Device"
       Driver      "dummy"
+      VideoRam    256000
    EndSection
    
    Section "Monitor"
      Identifier "Configured Monitor"
-     HorizSync 31.5-48.5
-     VertRefresh 50-70 
+     HorizSync 50-70
+     VertRefresh 50-70
+     ModeLine "1920x1080" 148.35 1920 2008 2052 2200 1080 1084 1089 1125 +HSync +VSync
    EndSection
    
    Section "Screen"
@@ -28,7 +44,7 @@
      DefaultDepth 24
      SubSection "Display"
          Depth    24
-         Modes "1280x720"
+         Modes "1920x1080_60.00"
      EndSubSection
    EndSection
    ```
@@ -42,7 +58,7 @@
 
 4. right click 'Login' and change password to empty
 
-5. Settings->Sharing->Remote Desktop enable->set password
+5. setup RDP: Settings->Sharing->Remote Desktop enable->set password
 
 6. reboot, test on both VNC and RDP
    
@@ -80,3 +96,4 @@ EndSection
 ## Contributing
 
 - [Jetson Orin No monitor, VNC only splash screen until monitor connected - #6，来自 Brian.He - Jetson AGX Orin - NVIDIA Developer Forums](https://forums.developer.nvidia.com/t/jetson-orin-no-monitor-vnc-only-splash-screen-until-monitor-connected/220642/6)
+* [Modeline Database - MythTV Official Wiki](https://www.mythtv.org/wiki/Modeline_Database)
